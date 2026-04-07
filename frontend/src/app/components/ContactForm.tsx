@@ -26,7 +26,7 @@ export function ContactForm() {
     setError(null);
 
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch('https://ugcportfolio-dqvc.onrender.com', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

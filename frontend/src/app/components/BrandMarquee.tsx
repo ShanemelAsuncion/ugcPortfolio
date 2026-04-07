@@ -1,9 +1,9 @@
 import { motion } from 'motion/react';
 
 const brands: { name: string }[] = [
-  // { name: ' ' },
-  // { name: 'with' },
-  // { name: 'me' },
+  { name: 'Batiste' },
+  { name: 'Therabreath' },
+  { name: 'Hero' },
 ];
 
 export function BrandMarquee() {
