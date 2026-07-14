@@ -1,143 +1,199 @@
-import { useState } from 'react';
-import { motion } from 'motion/react';
+import { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { VideoModal } from './VideoModal';
 
-const portfolioItems = [
+interface PortfolioItem {
+  title: string;
+  tags: string[];
+  format: string;
+  thumbnail: string;
+  videoUrl: string;
+}
+
+// Add/edit videos here. Each video can have multiple niche tags —
+// it will show up under every matching filter tab.
+const portfolioItems: PortfolioItem[] = [
   {
     title: 'The "Glow-Up" Routine',
-    niche: 'Wellness & Skincare',
+    tags: ['Skincare', 'Wellness'],
     format: 'Authentic Product Demo',
     thumbnail: '/thumbnails/IMG_0981.PNG',
-    videoUrl: 'https://youtube.com/shorts/Ct62AVaAFO0?si=QZFByJcUxZ2Jf3iG'
+    videoUrl: 'https://youtube.com/shorts/Ct62AVaAFO0?si=QZFByJcUxZ2Jf3iG',
   },
   {
     title: 'The "Coffee Breath" Cure',
-    niche: 'Personal Care & Parenting Lifestyle',
+    tags: ['Personal Care', 'Parenting'],
     format: 'Testimonial with Relatable Lifestyle Hook',
     thumbnail: '/thumbnails/IMG_1464.JPG',
-    videoUrl: 'https://youtube.com/shorts/HEe6ldbjL-g?feature=share'
+    videoUrl: 'https://youtube.com/shorts/HEe6ldbjL-g?feature=share',
   },
   {
     title: 'The "Five-Minute" Refresh',
-    niche: 'Beauty & Haircare / Parenting Lifestyle',
+    tags: ['Haircare', 'Parenting'],
     format: 'Short-Form Problem/Solution Routine',
     thumbnail: '/thumbnails/IMG_1453.PNG',
-    videoUrl: 'https://youtube.com/shorts/HWo6MUIOS3s'
+    videoUrl: 'https://youtube.com/shorts/HWo6MUIOS3s',
   },
   {
     title: 'The Ultimate Hydration Secret',
-    niche: 'Beauty & Wellness',
+    tags: ['Beauty', 'Wellness'],
     format: 'Unboxing and Product Demo',
     thumbnail: '/thumbnails/thumb1.png',
-    videoUrl: 'https://youtube.com/shorts/BxbpYq2JL-o'
+    videoUrl: 'https://youtube.com/shorts/BxbpYq2JL-o',
   },
   {
     title: 'Safe Sleep Transition Must Have',
-    niche: 'Family & Baby / Parenting',
+    tags: ['Baby & Family', 'Parenting'],
     format: 'Testimonial & Product Review',
     thumbnail: '/thumbnails/thumb2.png',
-    videoUrl: 'https://youtube.com/shorts/Uga_-UDcexM'
+    videoUrl: 'https://youtube.com/shorts/Uga_-UDcexM',
   },
+  // Add portfolio items here!
 ];
 
 export function PortfolioGallery() {
-  // Track the index of the video currently playing
-  const [activeVideoIndex, setActiveVideoIndex] = useState<number | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [activeItem, setActiveItem] = useState<PortfolioItem | null>(null);
 
-  const getEmbedUrl = (url: string) => {
-    const videoId = url.includes('shorts/') 
-      ? url.split('shorts/')[1].split('?')[0]
-      : url.includes('v=') 
-        ? url.split('v=')[1].split('&')[0]
-        : url.split('/').pop()?.split('?')[0];
-    
-    // Adding autoplay=1 so it plays immediately on click
-    return `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`;
+  const allTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    portfolioItems.forEach((item) => item.tags.forEach((t) => tagSet.add(t)));
+    return Array.from(tagSet).sort();
+  }, []);
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
   };
+
+  // OR logic: a video shows if it matches ANY selected tag.
+  const filteredItems =
+    selectedTags.length === 0
+      ? portfolioItems
+      : portfolioItems.filter((item) =>
+          item.tags.some((tag) => selectedTags.includes(tag))
+        );
 
   return (
     <section id="portfolio" className="bg-[#FAF8F5] py-24 px-6 md:px-20">
-      <motion.div 
+      <motion.div
         className="max-w-7xl mx-auto"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: '-100px' }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className="text-4xl md:text-5xl font-serif text-[#7E6956] mb-16 text-center">
+        <h2 className="text-4xl md:text-5xl font-serif text-[#7E6956] mb-6 text-center">
           My Portfolio
         </h2>
-        
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-          {portfolioItems.map((item, index) => {
-            const isPlaying = activeVideoIndex === index;
+        <p className="text-[#7E6956]/80 text-center mb-10">
+          Filter by niche — select multiple to broaden your view.
+        </p>
 
+        {/* Filter tabs */}
+        <div className="flex flex-wrap justify-center gap-3 mb-14">
+          <button
+            onClick={() => setSelectedTags([])}
+            className={`px-5 py-2 rounded-full text-sm transition-colors border ${
+              selectedTags.length === 0
+                ? 'bg-[#C4A88A] text-white border-[#C4A88A]'
+                : 'bg-white text-[#7E6956] border-[#E5DDD3] hover:border-[#C4A88A]'
+            }`}
+          >
+            All
+          </button>
+          {allTags.map((tag) => {
+            const isActive = selectedTags.includes(tag);
             return (
-              <motion.div 
-                key={index} 
-                className="group cursor-pointer"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                onClick={() => setActiveVideoIndex(index)}
+              <button
+                key={tag}
+                onClick={() => toggleTag(tag)}
+                className={`px-5 py-2 rounded-full text-sm transition-colors border ${
+                  isActive
+                    ? 'bg-[#C4A88A] text-white border-[#C4A88A]'
+                    : 'bg-white text-[#7E6956] border-[#E5DDD3] hover:border-[#C4A88A]'
+                }`}
               >
-                <div className="relative mx-auto max-w-[200px]">
-                  {/* iPhone frame */}
-                  <div className="relative bg-gradient-to-br from-gray-900 to-black rounded-[2.5rem] p-2 shadow-2xl ring-1 ring-gray-700/50">
-                    <div className="relative bg-black rounded-[2rem] overflow-hidden aspect-[9/19] shadow-inner">
-                      {/* Notch */}
-                      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-black w-24 h-6 rounded-b-2xl z-20 shadow-lg"></div>
-                      
-                      {isPlaying ? (
-                        /* Live Video Player */
-                        <iframe
-                          className="w-full h-full"
-                          src={getEmbedUrl(item.videoUrl)}
-                          title={item.title}
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        />
-                      ) : (
-                        /* Static Thumbnail Mode */
-                        <>
-                          <img 
-                            src={item.thumbnail} 
-                            alt={item.title}
-                            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-all duration-300">
-                            <div className="w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                              <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-[#7E6956] border-b-[6px] border-b-transparent ml-1"></div>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      
-                      {/* Screen reflection effect (removed when playing for better visibility) */}
-                      {!isPlaying && <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Caption */}
-                <div className="text-center mt-4 space-y-1">
-                  <h3 className={`text-sm font-medium transition-colors ${isPlaying ? 'text-black' : 'text-[#7E6956]'}`}>
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-[#9B8B7E]">
-                    {item.niche}
-                  </p>
-                  <p className="text-xs text-[#B8A08D] font-light italic">
-                    {item.format}
-                  </p>
-                </div>
-              </motion.div>
+                {tag}
+              </button>
             );
           })}
         </div>
+
+        {/* Grid */}
+        {filteredItems.length === 0 ? (
+          <p className="text-center text-[#9B8B7E]">
+            No videos match that combination yet — try a different filter.
+          </p>
+        ) : (
+          <motion.div
+            layout
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6"
+          >
+            <AnimatePresence>
+              {filteredItems.map((item) => (
+                <motion.div
+                  key={item.title}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  className="group cursor-pointer"
+                  onClick={() => setActiveItem(item)}
+                >
+                  <div className="relative mx-auto max-w-[200px]">
+                    {/* iPhone frame */}
+                    <div className="relative bg-gradient-to-br from-gray-900 to-black rounded-[2.5rem] p-2 shadow-2xl ring-1 ring-gray-700/50">
+                      <div className="relative bg-black rounded-[2rem] overflow-hidden aspect-[9/19] shadow-inner">
+                        {/* Notch */}
+                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-black w-24 h-6 rounded-b-2xl z-20 shadow-lg"></div>
+
+                        <img
+                          src={item.thumbnail}
+                          alt={item.title}
+                          className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-all duration-300">
+                          <div className="w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                            <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-[#7E6956] border-b-[6px] border-b-transparent ml-1"></div>
+                          </div>
+                        </div>
+
+                        {/* Screen reflection effect */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Caption */}
+                  <div className="text-center mt-4 space-y-1">
+                    <h3 className="text-sm font-medium text-[#7E6956]">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs text-[#9B8B7E]">
+                      {item.tags.join(' · ')}
+                    </p>
+                    <p className="text-xs text-[#B8A08D] font-light italic">
+                      {item.format}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
       </motion.div>
+
+      <VideoModal
+        isOpen={activeItem !== null}
+        onClose={() => setActiveItem(null)}
+        videoUrl={activeItem?.videoUrl ?? ''}
+        title={activeItem?.title ?? ''}
+        subtitle={activeItem ? activeItem.tags.join(' · ') : ''}
+      />
     </section>
   );
 }

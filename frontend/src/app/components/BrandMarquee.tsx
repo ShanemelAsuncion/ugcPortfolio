@@ -1,100 +1,72 @@
 import { motion } from 'motion/react';
 
-const brands: { name: string }[] = [
+interface Brand {
+  name: string;
+  // Optional path to a logo image saved in /public/logos, e.g. '/logos/batiste.png'.
+  // Brands without a logo automatically fall back to a text pill — no broken images.
+  logo?: string;
+}
+
+// Add `logo: '/logos/yourfile.png'` once you have permission to use each brand's
+// logo image. Save logo files in frontend/public/logos/.
+const brands: Brand[] = [
   { name: 'Batiste' },
   { name: 'Therabreath' },
   { name: 'Hero' },
 ];
 
 export function BrandMarquee() {
-  // Handle edge case when there are no brands
-  if (brands.length === 0) {
-    return (
-      <section className="bg-white py-16 overflow-hidden border-y border-[#E5D5C4]">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
-        >
-          <h2 className="text-center text-3xl md:text-4xl font-serif text-[#B8A08D]">
-           Work with me!
-          </h2>
-        </motion.div>
-        <div className="text-center text-[#9B8B7E]">
-          <p></p>
-        </div>
-      </section>
-    );
-  }
-
-  // Repeating the array ensures the marquee is long enough to loop seamlessly
-  const repeatedBrands = [...brands, ...brands, ...brands, ...brands, ...brands, ...brands];
-
   return (
-    <section className="bg-white py-16 overflow-hidden border-y border-[#E5D5C4]">
+    <section className="bg-white py-16 px-6 md:px-20 border-y border-[#E5D5C4]">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="mb-8"
+        className="mb-10"
       >
-        {/* <h2 className="text-center text-3xl md:text-4xl font-serif text-[#B8A08D]">
-          Brands I've Worked With
-        </h2> */}
         <h2 className="text-center text-3xl md:text-4xl font-serif text-[#B8A08D]">
-         Work with me!
+          Work with me!
         </h2>
       </motion.div>
-      
-      <div className="relative flex overflow-hidden">
-        {/* Gradient overlays for a fade-in/out effect */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
-        
-        <div className="flex animate-marquee whitespace-nowrap">
-          {/* First set of brands */}
-          {repeatedBrands.map((brand, index) => (
-            <div key={`brand-1-${index}`} className="flex items-center mx-4">
-              <div className="px-8 py-3 bg-[#F5F0EB] rounded-full border border-[#E5D5C4]">
-                <span className="text-lg font-medium text-[#7E6956]">
-                  {brand.name}
-                </span>
-              </div>
-            </div>
-          ))}
-          {/* Duplicate set for the seamless loop */}
-          {repeatedBrands.map((brand, index) => (
-            <div key={`brand-2-${index}`} className="flex items-center mx-4">
-              <div className="px-8 py-3 bg-[#F5F0EB] rounded-full border border-[#E5D5C4]">
-                <span className="text-lg font-medium text-[#7E6956]">
-                  {brand.name}
-                </span>
-              </div>
-            </div>
-          ))}
+
+      {brands.length === 0 ? (
+        <div className="text-center text-[#9B8B7E]">
+          <p></p>
         </div>
-      </div>
-      
-      <style>{`
-        @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        
-        .animate-marquee {
-          /* Higher number = Slower speed */
-          animation: marquee 60s linear infinite;
-          display: flex;
-          width: max-content;
-        }
-      `}</style>
+      ) : (
+        <motion.div
+          className="flex flex-wrap items-center justify-center gap-4 max-w-4xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+        >
+          {brands.map((brand) =>
+            brand.logo ? (
+              <div
+                key={brand.name}
+                className="h-16 px-8 flex items-center justify-center bg-white rounded-full border border-[#E5D5C4] grayscale hover:grayscale-0 transition-all duration-300"
+              >
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  className="h-7 md:h-8 w-auto object-contain"
+                />
+              </div>
+            ) : (
+              <div
+                key={brand.name}
+                className="px-8 py-3 bg-[#F5F0EB] rounded-full border border-[#E5D5C4]"
+              >
+                <span className="text-lg font-medium text-[#7E6956]">
+                  {brand.name}
+                </span>
+              </div>
+            )
+          )}
+        </motion.div>
+      )}
     </section>
   );
 }

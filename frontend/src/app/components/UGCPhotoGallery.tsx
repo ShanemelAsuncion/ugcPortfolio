@@ -1,3 +1,6 @@
+import { useCallback, useEffect, useState } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const photos = [
@@ -34,13 +37,30 @@ const photos = [
 ];
 
 export function UGCPhotoGallery() {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+    emblaApi.on('select', onSelect);
+    onSelect();
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi]);
+
   return (
     <section className="bg-white py-24 px-6 md:px-20">
-      <motion.div 
-        className="max-w-7xl mx-auto"
+      <motion.div
+        className="max-w-6xl mx-auto"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: '-100px' }}
         transition={{ duration: 0.6 }}
       >
         <div className="text-center mb-16">
@@ -51,40 +71,66 @@ export function UGCPhotoGallery() {
             Professional product photography that tells your brand's story through authentic, aesthetic imagery
           </p>
         </div>
-        
-        {/* Masonry Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {photos.map((photo, index) => (
-            <motion.div
-              key={index}
-              className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ scale: 1.03 }}
-            >
-              {/* Image */}
-              <div className="aspect-square overflow-hidden bg-[#F5F0EB]">
-                <img 
-                  src={photo.url} 
-                  alt={photo.description}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-              
-              {/* Overlay with text */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#7E6956]/90 via-[#7E6956]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                  <span className="inline-block px-3 py-1 bg-white/90 text-[#7E6956] text-xs font-medium rounded-full mb-2">
-                    {photo.category}
-                  </span>
-                  <h3 className="text-white font-serif text-xl">
-                    {photo.description}
-                  </h3>
+
+        {/* Carousel */}
+        <div className="relative">
+          <div className="overflow-hidden rounded-3xl" ref={emblaRef}>
+            <div className="flex">
+              {photos.map((photo, index) => (
+                <div
+                  key={index}
+                  className="relative flex-[0_0_100%] min-w-0"
+                >
+                  <div className="relative h-[420px] sm:h-[520px] md:h-[620px] bg-[#F5F0EB] overflow-hidden">
+                    <img
+                      src={photo.url}
+                      alt={photo.description}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#7E6956]/80 via-[#7E6956]/10 to-transparent flex flex-col justify-end p-8 md:p-10">
+                      <span className="inline-block w-fit px-3 py-1 bg-white/90 text-[#7E6956] text-xs font-medium rounded-full mb-3">
+                        {photo.category}
+                      </span>
+                      <h3 className="text-white font-serif text-2xl md:text-3xl">
+                        {photo.description}
+                      </h3>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Prev / Next arrows */}
+          <button
+            onClick={scrollPrev}
+            aria-label="Previous photo"
+            className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-lg transition-colors"
+          >
+            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-[#7E6956]" />
+          </button>
+          <button
+            onClick={scrollNext}
+            aria-label="Next photo"
+            className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-lg transition-colors"
+          >
+            <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-[#7E6956]" />
+          </button>
+        </div>
+
+        {/* Dot indicators */}
+        <div className="flex items-center justify-center gap-2 mt-6">
+          {photos.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => scrollTo(index)}
+              aria-label={`Go to photo ${index + 1}`}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                selectedIndex === index
+                  ? 'w-8 bg-[#C4A88A]'
+                  : 'w-2 bg-[#E5D5C4] hover:bg-[#D8C4AE]'
+              }`}
+            />
           ))}
         </div>
 

@@ -1,4 +1,4 @@
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const services = [
@@ -55,7 +55,7 @@ export function AboutServices() {
                 UGC Creator
               </span>
               <span className="px-4 py-2 bg-[#FFB6C1]/20 border border-[#FFB6C1] rounded-full text-sm text-[#7E6956]">
-                Software Developer
+                Tech-Savvy Creator
               </span>
               <span className="px-4 py-2 bg-[#FFB6C1]/20 border border-[#FFB6C1] rounded-full text-sm text-[#7E6956]">
                 Gen Z
@@ -64,16 +64,16 @@ export function AboutServices() {
             
             <div className="space-y-4 text-[#7E6956] max-w-xl mx-auto lg:mx-0 text-left leading-relaxed" style={{ lineHeight: '1.8' }}>
               <p>
-                I'm Shanemel, a creator dedicated to bringing authenticity back to the digital space. As a 25-year-old mom navigating life in Canada, I know that today's audience craves realness over perfection. With a professional background as a Content Creator, I bring a high level of technical quality to every frame, from crisp lighting to seamless editing.
+                I'm Shanemel, a creator dedicated to bringing authenticity back to the digital space. As a 25-year-old mom navigating life in Canada, I know that today's audience craves realness over perfection. With a professional background as a Content Creator, I bring a high level of technical quality to every frame, from crisp lighting to seamless editing — you can see it for yourself in the portfolio and photography above.
               </p>
               
               <p>
-                I specialize in crafting aesthetic, honest content that resonates across niches—from tech and wellness to home and family. I'm here to help your brand tell a story that feels like a recommendation from a trusted friend.
+                I specialize in crafting aesthetic, honest content across <strong>Beauty, Skincare, Wellness, Parenting & Baby, and Tech</strong>. I'm here to help your brand tell a story that feels like a recommendation from a trusted friend.
               </p>
             </div>
             
-            {/* CTA Button */}
-            <div className="max-w-xl mx-auto lg:mx-0">
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap gap-3 max-w-xl mx-auto lg:mx-0">
               <button 
                 onClick={() => {
                   const element = document.getElementById('contact');
@@ -82,6 +82,15 @@ export function AboutServices() {
                 className="inline-block px-8 py-4 bg-[#C4A88A] text-white rounded-full hover:bg-[#B8A08D] transition-colors text-lg font-medium shadow-lg hover:shadow-xl"
               >
                 Work With Me
+              </button>
+              <button 
+                onClick={() => {
+                  const element = document.getElementById('pricing');
+                  element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="inline-block px-8 py-4 bg-white text-[#7E6956] border-2 border-[#E5DDD3] rounded-full hover:border-[#C4A88A] hover:text-[#C4A88A] transition-all text-lg font-medium shadow-lg hover:shadow-xl"
+              >
+                View Packages
               </button>
             </div>
           </motion.div>
@@ -98,7 +107,7 @@ export function AboutServices() {
               My Services
             </h3>
             
-            <div className="space-y-5">
+            <div className="space-y-5 mb-8">
               {services.map((service, index) => (
                 <motion.div 
                   key={index} 
@@ -117,6 +126,17 @@ export function AboutServices() {
                 </motion.div>
               ))}
             </div>
+
+            <button
+              onClick={() => {
+                const element = document.getElementById('pricing');
+                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="inline-flex items-center gap-2 text-[#C4A88A] hover:text-[#B8A08D] font-medium transition-colors"
+            >
+              See full packages & pricing
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </motion.div>
         </div>
       </motion.div>

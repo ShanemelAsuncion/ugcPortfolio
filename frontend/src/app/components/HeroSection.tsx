@@ -1,9 +1,7 @@
 import { Mail } from 'lucide-react';
 import { FaTiktok } from 'react-icons/fa';
-import { RiInstagramFill } from 'react-icons/ri';
+import { RiInstagramFill, RiYoutubeFill } from 'react-icons/ri';
 import { motion } from 'motion/react';
-
-const heroImage = 'https://images.unsplash.com/photo-1494790108755-2616b332c1ca?w=800&h=1200&fit=crop&crop=face&q=85';
 
 export function HeroSection() {
   return (
@@ -22,8 +20,20 @@ export function HeroSection() {
                 Shanemel<br />Asuncion
               </h1>
               <p className="text-lg text-[#7E6956] mt-6">
-                UGC Creator / Short form creator for paid ads
+                UGC Creator for Beauty, Wellness, Parenting &amp; Tech Brands — short-form video built for paid ads
               </p>
+
+              {/* Niche badges — instant category scan for brands */}
+              <div className="flex flex-wrap gap-2 mt-4">
+                {['Skincare', 'Wellness', 'Beauty', 'Parenting & Baby', 'Tech'].map((niche) => (
+                  <span
+                    key={niche}
+                    className="px-3 py-1 bg-white border border-[#E5DDD3] rounded-full text-xs text-[#7E6956]"
+                  >
+                    {niche}
+                  </span>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-3">
@@ -62,13 +72,25 @@ export function HeroSection() {
                   </a>
                 </div>
               </div>
+              
+              <div className="flex items-center gap-3 text-[#7E6956]">
+                <div className="w-8 h-8 rounded-full bg-[#C4A88A] flex items-center justify-center flex-shrink-0">
+                  <RiYoutubeFill className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <span className="font-medium">YouTube:</span>{' '}
+                  <a href="https://youtube.com/@lei.ugc.ca" target="_blank" rel="noopener noreferrer" className="hover:text-[#C4A88A] transition-colors">
+                    @lei.ugc.ca
+                  </a>
+                </div>
+              </div>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mt-8">
+            <div className="flex flex-nowrap items-center gap-1.5 sm:gap-2 md:gap-3 mt-8 w-full overflow-x-auto pb-1">
               <a 
                 href="#portfolio" 
-                className="inline-block px-8 py-4 bg-[#C4A88A] text-white rounded-full hover:bg-[#B8A08D] transition-colors text-lg font-medium shadow-lg hover:shadow-xl"
+                className="inline-flex flex-shrink-0 whitespace-nowrap px-3 sm:px-4 md:px-6 py-2 md:py-3 bg-[#C4A88A] text-white rounded-full hover:bg-[#B8A08D] transition-colors text-xs sm:text-sm md:text-base font-medium shadow-lg hover:shadow-xl"
               >
                 View My Work
               </a>
@@ -77,9 +99,18 @@ export function HeroSection() {
                   const element = document.getElementById('contact');
                   element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
-                className="inline-block px-8 py-4 bg-white text-[#C4A88A] border-2 border-[#C4A88A] rounded-full hover:bg-[#C4A88A] hover:text-white transition-all text-lg font-medium shadow-lg hover:shadow-xl"
+                className="inline-flex flex-shrink-0 whitespace-nowrap px-3 sm:px-4 md:px-6 py-2 md:py-3 bg-white text-[#C4A88A] border-2 border-[#C4A88A] rounded-full hover:bg-[#C4A88A] hover:text-white transition-all text-xs sm:text-sm md:text-base font-medium shadow-lg hover:shadow-xl"
               >
                 Work With Me
+              </button>
+              <button 
+                onClick={() => {
+                  const element = document.getElementById('pricing');
+                  element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="inline-flex flex-shrink-0 whitespace-nowrap px-3 sm:px-4 md:px-6 py-2 md:py-3 bg-white text-[#7E6956] border-2 border-[#E5DDD3] rounded-full hover:border-[#C4A88A] hover:text-[#C4A88A] transition-all text-xs sm:text-sm md:text-base font-medium shadow-lg hover:shadow-xl"
+              >
+                Check My Rates
               </button>
             </div>
           </motion.div>
@@ -96,12 +127,9 @@ export function HeroSection() {
               <div className="aspect-[4/5] flex items-center justify-center">
                 <img 
                   src="/thumbnails/IMG_6551.jpg"
-                  alt="Intro Video"
+                  alt="Shanemel Asuncion, UGC Creator"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  {/* <div className="text-white text-2xl font-serif">Intro Video</div> */}
-                </div>
               </div>
             </div>
           </motion.div>
