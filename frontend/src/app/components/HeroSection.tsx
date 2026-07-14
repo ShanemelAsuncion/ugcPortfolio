@@ -5,7 +5,6 @@ import { motion } from 'motion/react';
 
 const stats = [
   { value: '8.3k', label: 'Total Reach' },
-  { value: '1.4K', label: 'TikTok' },
   { value: '50+', label: 'Brands' },
   { value: '70+', label: 'Videos Delivered' },
 ];
@@ -87,7 +86,12 @@ export function HeroSection() {
                 <div>
                   <span className="font-medium text-[#221D17]">TikTok:</span>{' '}
                   <a href="https://tiktok.com/@mami.and.reyn" target="_blank" rel="noopener noreferrer" className="hover:text-[#B5623F] transition-colors">
-                    @mami.and.reyn
+                    @mami.and.reyn,
+                  </a>
+                </div>
+                <div>
+                  <a href="https://tiktok.com/@ms_swan_" target="_blank" rel="noopener noreferrer" className="hover:text-[#B5623F] transition-colors">
+                    @ms_swan_
                   </a>
                 </div>
               </div>
@@ -99,7 +103,12 @@ export function HeroSection() {
                 <div>
                   <span className="font-medium text-[#221D17]">Instagram:</span>{' '}
                   <a href="https://instagram.com/lei.ugc.ca" target="_blank" rel="noopener noreferrer" className="hover:text-[#B5623F] transition-colors">
-                    @lei.ugc.ca
+                    @lei.ugc.ca,
+                  </a>
+                </div>
+                <div>
+                  <a href="https://instagram.com/mami.and.reyn" target="_blank" rel="noopener noreferrer" className="hover:text-[#B5623F] transition-colors">
+                    @mami.and.reyn
                   </a>
                 </div>
               </div>
