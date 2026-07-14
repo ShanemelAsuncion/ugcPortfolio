@@ -28,14 +28,14 @@ export function VideoModal({ isOpen, onClose, videoUrl, title, subtitle }: Video
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: 'spring', damping: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative bg-[#FAF8F5] rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
+            className="relative bg-[#FAF6F0] rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
           >
             {/* Close button */}
             <button
               onClick={onClose}
               className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors shadow-lg"
             >
-              <X className="w-5 h-5 text-[#7E6956]" />
+              <X className="w-5 h-5 text-[#221D17]" />
             </button>
 
             {/* Video Container */}
@@ -54,10 +54,10 @@ export function VideoModal({ isOpen, onClose, videoUrl, title, subtitle }: Video
 
             {/* Video Info */}
             <div className="p-6">
-              <h3 className="text-2xl font-serif text-[#7E6956] mb-2">
+              <h3 className="text-2xl font-serif text-[#221D17] mb-2">
                 {title}
               </h3>
-              <p className="text-[#9B8B7E]">
+              <p className="text-[#6B5D50]">
                 {subtitle}
               </p>
             </div>

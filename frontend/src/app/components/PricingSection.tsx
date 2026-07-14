@@ -87,7 +87,7 @@ const addOns = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="bg-[#FAF8F5] py-24 px-6 md:px-20">
+    <section id="pricing" className="bg-[#FAF6F0] py-24 px-6 md:px-20">
       <motion.div
         className="max-w-7xl mx-auto"
         initial={{ opacity: 0, y: 50 }}
@@ -95,10 +95,15 @@ export function PricingSection() {
         viewport={{ once: true, margin: '-100px' }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className="text-4xl md:text-5xl font-serif text-[#7E6956] mb-4 text-center">
-          Packages & Pricing
-        </h2>
-        <p className="text-lg text-[#7E6956]/80 text-center max-w-2xl mx-auto mb-16">
+        <div className="text-center mb-4">
+          <span className="text-xs uppercase tracking-[0.2em] text-[#B5623F] font-medium">
+            Pricing
+          </span>
+          <h2 className="text-4xl md:text-5xl font-serif text-[#221D17] mt-2">
+            Packages &amp; Pricing
+          </h2>
+        </div>
+        <p className="text-lg text-[#6B5D50] text-center max-w-2xl mx-auto mb-16">
           Straightforward pricing, no back-and-forth needed. Every package is
           customizable — reach out if you need something different.
         </p>
@@ -110,8 +115,8 @@ export function PricingSection() {
               key={pkg.name}
               className={`relative flex flex-col rounded-3xl p-8 shadow-lg ${
                 pkg.highlighted
-                  ? 'bg-white border-2 border-[#C4A88A] shadow-xl md:-translate-y-3'
-                  : 'bg-white border border-[#E5DDD3]'
+                  ? 'bg-white border-2 border-[#221D17] shadow-xl md:-translate-y-3'
+                  : 'bg-white border border-[#E7DCCD]'
               }`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -119,23 +124,23 @@ export function PricingSection() {
               transition={{ duration: 0.5, delay: index * 0.15 }}
             >
               {pkg.highlighted && (
-                <span className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#C4A88A] text-white text-sm rounded-full shadow-md">
+                <span className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#B5623F] text-white text-sm rounded-full shadow-md">
                   Most Popular
                 </span>
               )}
 
-              <h3 className="text-2xl font-serif text-[#7E6956] mb-1">
+              <h3 className="text-2xl font-serif text-[#221D17] mb-1">
                 {pkg.name}
               </h3>
-              <p className="text-sm text-[#7E6956]/70 mb-6">
+              <p className="text-sm text-[#6B5D50] mb-6">
                 {pkg.description}
               </p>
 
               <div className="mb-6">
-                <span className="text-4xl font-serif text-[#7E6956]">
+                <span className="text-4xl font-serif text-[#221D17]">
                   {pkg.price}
                 </span>
-                <span className="text-sm text-[#7E6956]/70 ml-2">
+                <span className="text-sm text-[#6B5D50] ml-2">
                   {pkg.unit}
                 </span>
               </div>
@@ -143,8 +148,8 @@ export function PricingSection() {
               <div className="flex-1 space-y-3 mb-8">
                 {pkg.features.map((feature) => (
                   <div key={feature} className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-[#C4A88A] flex-shrink-0 mt-0.5" />
-                    <span className="text-[#7E6956]">{feature}</span>
+                    <CheckCircle2 className="w-5 h-5 text-[#B5623F] flex-shrink-0 mt-0.5" />
+                    <span className="text-[#221D17]">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -156,8 +161,8 @@ export function PricingSection() {
                 }}
                 className={`w-full py-3 rounded-full transition-colors font-medium ${
                   pkg.highlighted
-                    ? 'bg-[#C4A88A] text-white hover:bg-[#B8A08D]'
-                    : 'bg-[#FAF8F5] text-[#7E6956] hover:bg-[#F0E9E0] border border-[#E5DDD3]'
+                    ? 'bg-[#B5623F] text-white hover:bg-[#9C4F30]'
+                    : 'bg-[#FAF6F0] text-[#221D17] hover:bg-[#F1DFD3] border border-[#E7DCCD]'
                 }`}
               >
                 Get Started
@@ -174,10 +179,10 @@ export function PricingSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <h3 className="text-2xl md:text-3xl font-serif text-[#7E6956] mb-2 text-center">
+          <h3 className="text-2xl md:text-3xl font-serif text-[#221D17] mb-2 text-center">
             Add-Ons
           </h3>
-          <p className="text-[#7E6956]/80 text-center max-w-2xl mx-auto mb-10">
+          <p className="text-[#6B5D50] text-center max-w-2xl mx-auto mb-10">
             Customize any package with the extras below.
           </p>
 
@@ -185,32 +190,32 @@ export function PricingSection() {
             {addOns.map((addOn, index) => (
               <motion.div
                 key={addOn.name}
-                className="bg-white rounded-2xl p-6 border border-[#E5DDD3] flex gap-4"
+                className="bg-white rounded-2xl p-6 border border-[#E7DCCD] flex gap-4"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: 0.1 + index * 0.1 }}
               >
                 <div className="flex-shrink-0">
-                  <div className="w-11 h-11 rounded-full bg-[#FFB6C1]/20 border border-[#FFB6C1] flex items-center justify-center">
-                    <addOn.icon className="w-5 h-5 text-[#7E6956]" />
+                  <div className="w-11 h-11 rounded-full bg-[#F1DFD3] border border-[#B5623F]/30 flex items-center justify-center">
+                    <addOn.icon className="w-5 h-5 text-[#B5623F]" />
                   </div>
                 </div>
                 <div>
                   <div className="flex items-baseline justify-between gap-2 mb-1">
-                    <h4 className="text-lg text-[#7E6956] font-medium">
+                    <h4 className="text-lg text-[#221D17] font-medium">
                       {addOn.name}
                     </h4>
                   </div>
                   <div className="mb-2">
-                    <span className="text-xl font-serif text-[#C4A88A]">
+                    <span className="text-xl font-serif text-[#B5623F]">
                       {addOn.price}
                     </span>
-                    <span className="text-sm text-[#7E6956]/70 ml-1">
+                    <span className="text-sm text-[#6B5D50] ml-1">
                       {addOn.unit}
                     </span>
                   </div>
-                  <p className="text-sm text-[#7E6956]/80 leading-relaxed">
+                  <p className="text-sm text-[#6B5D50] leading-relaxed">
                     {addOn.description}
                   </p>
                 </div>
@@ -227,43 +232,43 @@ export function PricingSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <h3 className="text-2xl font-serif text-[#7E6956] mb-8 text-center">
+          <h3 className="text-2xl font-serif text-[#221D17] mb-8 text-center">
             Good to Know
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center md:text-left">
-              <div className="w-12 h-12 rounded-full bg-[#FFB6C1]/20 border border-[#FFB6C1] flex items-center justify-center mx-auto md:mx-0 mb-4">
-                <ShieldCheck className="w-6 h-6 text-[#7E6956]" />
+              <div className="w-12 h-12 rounded-full bg-[#F1DFD3] border border-[#B5623F]/30 flex items-center justify-center mx-auto md:mx-0 mb-4">
+                <ShieldCheck className="w-6 h-6 text-[#B5623F]" />
               </div>
-              <h4 className="text-lg text-[#7E6956] mb-2 font-medium">
+              <h4 className="text-lg text-[#221D17] mb-2 font-medium">
                 Usage & Licensing
               </h4>
-              <p className="text-sm text-[#7E6956]/80 leading-relaxed">
+              <p className="text-sm text-[#6B5D50] leading-relaxed">
                 Organic (non-paid) usage rights are included with every package.
                 Paid ad usage requires the add-on above — reach out if you need
                 exclusivity or a perpetual buyout.
               </p>
             </div>
             <div className="text-center md:text-left">
-              <div className="w-12 h-12 rounded-full bg-[#FFB6C1]/20 border border-[#FFB6C1] flex items-center justify-center mx-auto md:mx-0 mb-4">
-                <Clock className="w-6 h-6 text-[#7E6956]" />
+              <div className="w-12 h-12 rounded-full bg-[#F1DFD3] border border-[#B5623F]/30 flex items-center justify-center mx-auto md:mx-0 mb-4">
+                <Clock className="w-6 h-6 text-[#B5623F]" />
               </div>
-              <h4 className="text-lg text-[#7E6956] mb-2 font-medium">
+              <h4 className="text-lg text-[#221D17] mb-2 font-medium">
                 Turnaround Time
               </h4>
-              <p className="text-sm text-[#7E6956]/80 leading-relaxed">
+              <p className="text-sm text-[#6B5D50] leading-relaxed">
                 Standard turnaround is listed per package above. Need it faster?
                 Add Rush Delivery for 48-hour turnaround.
               </p>
             </div>
             <div className="text-center md:text-left">
-              <div className="w-12 h-12 rounded-full bg-[#FFB6C1]/20 border border-[#FFB6C1] flex items-center justify-center mx-auto md:mx-0 mb-4">
-                <RefreshCw className="w-6 h-6 text-[#7E6956]" />
+              <div className="w-12 h-12 rounded-full bg-[#F1DFD3] border border-[#B5623F]/30 flex items-center justify-center mx-auto md:mx-0 mb-4">
+                <RefreshCw className="w-6 h-6 text-[#B5623F]" />
               </div>
-              <h4 className="text-lg text-[#7E6956] mb-2 font-medium">
+              <h4 className="text-lg text-[#221D17] mb-2 font-medium">
                 Revisions
               </h4>
-              <p className="text-sm text-[#7E6956]/80 leading-relaxed">
+              <p className="text-sm text-[#6B5D50] leading-relaxed">
                 Revision rounds are included as noted per package. Additional
                 rounds beyond that are $40 per round.
               </p>

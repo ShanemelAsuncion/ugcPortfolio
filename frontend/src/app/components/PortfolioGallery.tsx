@@ -76,7 +76,7 @@ export function PortfolioGallery() {
         );
 
   return (
-    <section id="portfolio" className="bg-[#FAF8F5] py-24 px-6 md:px-20">
+    <section id="portfolio" className="bg-[#FAF6F0] py-24 px-6 md:px-20">
       <motion.div
         className="max-w-7xl mx-auto"
         initial={{ opacity: 0, y: 50 }}
@@ -84,10 +84,15 @@ export function PortfolioGallery() {
         viewport={{ once: true, margin: '-100px' }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className="text-4xl md:text-5xl font-serif text-[#7E6956] mb-6 text-center">
-          My Portfolio
-        </h2>
-        <p className="text-[#7E6956]/80 text-center mb-10">
+        <div className="text-center mb-6">
+          <span className="text-xs uppercase tracking-[0.2em] text-[#B5623F] font-medium">
+            Portfolio
+          </span>
+          <h2 className="text-4xl md:text-5xl font-serif text-[#221D17] mt-2">
+            Selected Work
+          </h2>
+        </div>
+        <p className="text-[#6B5D50] text-center mb-10">
           Filter by niche — select multiple to broaden your view.
         </p>
 
@@ -97,8 +102,8 @@ export function PortfolioGallery() {
             onClick={() => setSelectedTags([])}
             className={`px-5 py-2 rounded-full text-sm transition-colors border ${
               selectedTags.length === 0
-                ? 'bg-[#C4A88A] text-white border-[#C4A88A]'
-                : 'bg-white text-[#7E6956] border-[#E5DDD3] hover:border-[#C4A88A]'
+                ? 'bg-[#221D17] text-white border-[#221D17]'
+                : 'bg-white text-[#6B5D50] border-[#E7DCCD] hover:border-[#B5623F]'
             }`}
           >
             All
@@ -111,8 +116,8 @@ export function PortfolioGallery() {
                 onClick={() => toggleTag(tag)}
                 className={`px-5 py-2 rounded-full text-sm transition-colors border ${
                   isActive
-                    ? 'bg-[#C4A88A] text-white border-[#C4A88A]'
-                    : 'bg-white text-[#7E6956] border-[#E5DDD3] hover:border-[#C4A88A]'
+                    ? 'bg-[#221D17] text-white border-[#221D17]'
+                    : 'bg-white text-[#6B5D50] border-[#E7DCCD] hover:border-[#B5623F]'
                 }`}
               >
                 {tag}
@@ -123,7 +128,7 @@ export function PortfolioGallery() {
 
         {/* Grid */}
         {filteredItems.length === 0 ? (
-          <p className="text-center text-[#9B8B7E]">
+          <p className="text-center text-[#6B5D50]">
             No videos match that combination yet — try a different filter.
           </p>
         ) : (
@@ -158,7 +163,7 @@ export function PortfolioGallery() {
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-all duration-300">
                           <div className="w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                            <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-[#7E6956] border-b-[6px] border-b-transparent ml-1"></div>
+                            <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-[#B5623F] border-b-[6px] border-b-transparent ml-1"></div>
                           </div>
                         </div>
 
@@ -170,13 +175,13 @@ export function PortfolioGallery() {
 
                   {/* Caption */}
                   <div className="text-center mt-4 space-y-1">
-                    <h3 className="text-sm font-medium text-[#7E6956]">
+                    <h3 className="text-sm font-medium text-[#221D17]">
                       {item.title}
                     </h3>
-                    <p className="text-xs text-[#9B8B7E]">
+                    <p className="text-xs uppercase tracking-[0.08em] text-[#B5623F]">
                       {item.tags.join(' · ')}
                     </p>
-                    <p className="text-xs text-[#B8A08D] font-light italic">
+                    <p className="text-xs text-[#6B5D50] font-light italic">
                       {item.format}
                     </p>
                   </div>

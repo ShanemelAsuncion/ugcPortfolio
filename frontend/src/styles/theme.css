@@ -135,6 +135,7 @@
 
   html {
     font-size: var(--font-size);
+    scroll-padding-top: 5.5rem;
   }
 
   h1 {
@@ -178,4 +179,17 @@
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 22s linear infinite;
 }

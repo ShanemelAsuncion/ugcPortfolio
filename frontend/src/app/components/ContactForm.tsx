@@ -65,8 +65,8 @@ export function ContactForm() {
 
   if (isSuccess) {
     return (
-      <section id="contact" className="bg-[#FAF8F5] py-24 px-6 md:px-20">
-        <motion.div 
+      <section id="contact" className="bg-[#FAF6F0] py-24 px-6 md:px-20">
+        <motion.div
           className="max-w-4xl mx-auto"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -81,16 +81,16 @@ export function ContactForm() {
             >
               <CheckCircle className="w-10 h-10 text-green-600" />
             </motion.div>
-            
-            <h2 className="text-3xl md:text-4xl font-serif text-[#7E6956] mb-4">
+
+            <h2 className="text-3xl md:text-4xl font-serif text-[#221D17] mb-4">
               Message Sent Successfully!
             </h2>
-            <p className="text-lg text-[#9B8B7E] mb-8">
+            <p className="text-lg text-[#6B5D50] mb-8">
               Thank you for reaching out. I'll get back to you as soon as possible.
             </p>
-            <button 
+            <button
               onClick={() => setIsSuccess(false)}
-              className="px-8 py-3 bg-[#C4A88A] text-white rounded-full hover:bg-[#B8A08D] transition-colors font-medium"
+              className="px-8 py-3 bg-[#B5623F] text-white rounded-full hover:bg-[#9C4F30] transition-colors font-medium"
             >
               Send Another Message
             </button>
@@ -101,8 +101,8 @@ export function ContactForm() {
   }
 
   return (
-    <section id="contact" className="bg-[#FAF8F5] py-24 px-6 md:px-20">
-      <motion.div 
+    <section id="contact" className="bg-[#FAF6F0] py-24 px-6 md:px-20">
+      <motion.div
         className="max-w-4xl mx-auto"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -110,10 +110,13 @@ export function ContactForm() {
         transition={{ duration: 0.6 }}
       >
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-serif text-[#7E6956] mb-4">
+          <span className="text-xs uppercase tracking-[0.2em] text-[#B5623F] font-medium">
+            Contact
+          </span>
+          <h2 className="text-4xl md:text-5xl font-serif text-[#221D17] mt-2 mb-4">
             Let's Work Together
           </h2>
-          <p className="text-lg text-[#9B8B7E]">
+          <p className="text-lg text-[#6B5D50]">
             Have a project in mind? Send me a message and let's create something amazing!
           </p>
         </div>
@@ -134,8 +137,8 @@ export function ContactForm() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Name Field */}
             <div>
-              <label htmlFor="name" className="flex items-center gap-2 text-[#7E6956] mb-2">
-                <User className="w-5 h-5 text-[#C4A88A]" />
+              <label htmlFor="name" className="flex items-center gap-2 text-[#221D17] mb-2">
+                <User className="w-5 h-5 text-[#B5623F]" />
                 <span>Your Name</span>
               </label>
               <input
@@ -147,9 +150,9 @@ export function ContactForm() {
                 })}
                 className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none ${
                   errors.name 
-                    ? 'border-red-400 focus:border-red-500' 
-                    : 'border-[#E5D5C4] focus:border-[#C4A88A]'
-                } bg-[#FAF8F5]`}
+                    ? 'border-red-400 focus:border-red-500'
+                    : 'border-[#E7DCCD] focus:border-[#B5623F]'
+                } bg-[#FAF6F0]`}
                 placeholder="Enter your name"
                 disabled={isSubmitting}
               />
@@ -160,8 +163,8 @@ export function ContactForm() {
 
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="flex items-center gap-2 text-[#7E6956] mb-2">
-                <Mail className="w-5 h-5 text-[#C4A88A]" />
+              <label htmlFor="email" className="flex items-center gap-2 text-[#221D17] mb-2">
+                <Mail className="w-5 h-5 text-[#B5623F]" />
                 <span>Email Address</span>
               </label>
               <input
@@ -176,9 +179,9 @@ export function ContactForm() {
                 })}
                 className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none ${
                   errors.email 
-                    ? 'border-red-400 focus:border-red-500' 
-                    : 'border-[#E5D5C4] focus:border-[#C4A88A]'
-                } bg-[#FAF8F5]`}
+                    ? 'border-red-400 focus:border-red-500'
+                    : 'border-[#E7DCCD] focus:border-[#B5623F]'
+                } bg-[#FAF6F0]`}
                 placeholder="your.email@example.com"
                 disabled={isSubmitting}
               />
@@ -189,8 +192,8 @@ export function ContactForm() {
 
             {/* Message Field */}
             <div>
-              <label htmlFor="message" className="flex items-center gap-2 text-[#7E6956] mb-2">
-                <MessageSquare className="w-5 h-5 text-[#C4A88A]" />
+              <label htmlFor="message" className="flex items-center gap-2 text-[#221D17] mb-2">
+                <MessageSquare className="w-5 h-5 text-[#B5623F]" />
                 <span>Your Message</span>
               </label>
               <textarea
@@ -202,9 +205,9 @@ export function ContactForm() {
                 })}
                 className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none resize-none ${
                   errors.message 
-                    ? 'border-red-400 focus:border-red-500' 
-                    : 'border-[#E5D5C4] focus:border-[#C4A88A]'
-                } bg-[#FAF8F5]`}
+                    ? 'border-red-400 focus:border-red-500'
+                    : 'border-[#E7DCCD] focus:border-[#B5623F]'
+                } bg-[#FAF6F0]`}
                 placeholder="Tell me about your project..."
                 disabled={isSubmitting}
               />
@@ -219,7 +222,7 @@ export function ContactForm() {
               whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
               whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
               disabled={isSubmitting}
-              className="w-full bg-[#C4A88A] hover:bg-[#B8A08D] disabled:bg-[#D4C4B0] disabled:cursor-not-allowed text-white py-4 px-8 rounded-xl transition-colors shadow-lg flex items-center justify-center gap-2 text-lg"
+              className="w-full bg-[#B5623F] hover:bg-[#9C4F30] disabled:bg-[#D8B8A8] disabled:cursor-not-allowed text-white py-4 px-8 rounded-xl transition-colors shadow-lg flex items-center justify-center gap-2 text-lg"
             >
               {isSubmitting ? (
                 <>
@@ -234,19 +237,6 @@ export function ContactForm() {
               )}
             </motion.button>
           </form>
-        </motion.div>
-
-        {/* Footer */}
-        <motion.div 
-          className="text-center mt-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <p className="text-[#9B8B7E]">
-            © 2026 Shanemel Asuncion. All rights reserved.
-          </p>
         </motion.div>
       </motion.div>
     </section>
