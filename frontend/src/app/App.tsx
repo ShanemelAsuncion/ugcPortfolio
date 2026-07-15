@@ -14,9 +14,9 @@ export default function App() {
     <div className="min-h-screen">
       <Navbar />
       <HeroSection />
+      <BrandMarquee />
       <PortfolioGallery />
       <UGCPhotoGallery />
-      <BrandMarquee />
       <TestimonialsSection />
       <PricingSection />
       <AboutServices />
