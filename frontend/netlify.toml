@@ -1,0 +1,31 @@
+# Proxies the admin panel and API through to the Render backend so they're
+# reachable under this domain too (leiugcca.com/admin), not just the raw
+# Render URL. Netlify fetches from the target and relays the response back
+# under this origin — the browser never sees the Render URL.
+#
+# /_next/* must be proxied too: the admin page's HTML references its own
+# JS/CSS bundles at that path, and they'd 404 without this rule.
+
+[[redirects]]
+  from = "/admin"
+  to = "https://ugcportfolio-dqvc.onrender.com/admin"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin/*"
+  to = "https://ugcportfolio-dqvc.onrender.com/admin/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/_next/*"
+  to = "https://ugcportfolio-dqvc.onrender.com/_next/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://ugcportfolio-dqvc.onrender.com/api/:splat"
+  status = 200
+  force = true
