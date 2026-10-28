@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { VideoModal } from './VideoModal';
+import { API_BASE_URL } from '../lib/config';
 
 interface PortfolioItem {
   title: string;
@@ -9,17 +10,23 @@ interface PortfolioItem {
   format: string;
   thumbnail: string;
   videoUrl: string;
+  /** 'upload' = a video file hosted on Cloudinary, played with a native <video> tag.
+   *  'url' = a manually pasted link (YouTube, etc), played in an iframe embed. */
+  type?: 'upload' | 'url';
 }
 
-// Add/edit videos here. Each video can have multiple niche tags —
-// it will show up under every matching filter tab.
-const portfolioItems: PortfolioItem[] = [
+// Shown immediately on load (and used as a fallback if the admin-managed API
+// is unreachable) so the gallery is never empty. Real editing happens at
+// /admin on the backend — see PortfolioGallery's useEffect below, which
+// fetches the live, admin-managed list and replaces this once it arrives.
+const fallbackPortfolioItems: PortfolioItem[] = [
   {
     title: 'The "Glow-Up" Routine',
     tags: ['Skincare', 'Wellness'],
     format: 'Authentic Product Demo',
     thumbnail: '/thumbnails/IMG_0981.PNG',
     videoUrl: 'https://youtube.com/shorts/Ct62AVaAFO0?si=QZFByJcUxZ2Jf3iG',
+    type: 'url',
   },
   {
     title: 'The "Coffee Breath" Cure',
@@ -27,6 +34,7 @@ const portfolioItems: PortfolioItem[] = [
     format: 'Testimonial with Relatable Lifestyle Hook',
     thumbnail: '/thumbnails/IMG_1464.JPG',
     videoUrl: 'https://youtube.com/shorts/HEe6ldbjL-g?feature=share',
+    type: 'url',
   },
   {
     title: 'The "Five-Minute" Refresh',
@@ -34,6 +42,7 @@ const portfolioItems: PortfolioItem[] = [
     format: 'Short-Form Problem/Solution Routine',
     thumbnail: '/thumbnails/IMG_1453.PNG',
     videoUrl: 'https://youtube.com/shorts/HWo6MUIOS3s',
+    type: 'url',
   },
   {
     title: 'The Ultimate Hydration Secret',
@@ -41,6 +50,7 @@ const portfolioItems: PortfolioItem[] = [
     format: 'Unboxing and Product Demo',
     thumbnail: '/thumbnails/thumb1.png',
     videoUrl: 'https://youtube.com/shorts/BxbpYq2JL-o',
+    type: 'url',
   },
   {
     title: 'Safe Sleep Transition Must Have',
@@ -48,76 +58,7 @@ const portfolioItems: PortfolioItem[] = [
     format: 'Testimonial & Product Review',
     thumbnail: '/thumbnails/thumb2.png',
     videoUrl: 'https://youtube.com/shorts/Uga_-UDcexM',
-  },
-  {
-    title: 'The "Glow-Up" Routine',
-    tags: ['Skincare', 'Wellness'],
-    format: 'Authentic Product Demo',
-    thumbnail: '/thumbnails/IMG_0981.PNG',
-    videoUrl: 'https://youtube.com/shorts/Ct62AVaAFO0?si=QZFByJcUxZ2Jf3iG',
-  },
-  {
-    title: 'The "Coffee Breath" Cure',
-    tags: ['Personal Care', 'Parenting'],
-    format: 'Testimonial with Relatable Lifestyle Hook',
-    thumbnail: '/thumbnails/IMG_1464.JPG',
-    videoUrl: 'https://youtube.com/shorts/HEe6ldbjL-g?feature=share',
-  },
-  {
-    title: 'The "Five-Minute" Refresh',
-    tags: ['Haircare', 'Parenting'],
-    format: 'Short-Form Problem/Solution Routine',
-    thumbnail: '/thumbnails/IMG_1453.PNG',
-    videoUrl: 'https://youtube.com/shorts/HWo6MUIOS3s',
-  },
-  {
-    title: 'The Ultimate Hydration Secret',
-    tags: ['Beauty', 'Wellness'],
-    format: 'Unboxing and Product Demo',
-    thumbnail: '/thumbnails/thumb1.png',
-    videoUrl: 'https://youtube.com/shorts/BxbpYq2JL-o',
-  },
-  {
-    title: 'Safe Sleep Transition Must Have',
-    tags: ['Baby & Family', 'Parenting'],
-    format: 'Testimonial & Product Review',
-    thumbnail: '/thumbnails/thumb2.png',
-    videoUrl: 'https://youtube.com/shorts/Uga_-UDcexM',
-  },
-  {
-    title: 'The "Glow-Up" Routine',
-    tags: ['Skincare', 'Wellness'],
-    format: 'Authentic Product Demo',
-    thumbnail: '/thumbnails/IMG_0981.PNG',
-    videoUrl: 'https://youtube.com/shorts/Ct62AVaAFO0?si=QZFByJcUxZ2Jf3iG',
-  },
-  {
-    title: 'The "Coffee Breath" Cure',
-    tags: ['Personal Care', 'Parenting'],
-    format: 'Testimonial with Relatable Lifestyle Hook',
-    thumbnail: '/thumbnails/IMG_1464.JPG',
-    videoUrl: 'https://youtube.com/shorts/HEe6ldbjL-g?feature=share',
-  },
-  {
-    title: 'The "Five-Minute" Refresh',
-    tags: ['Haircare', 'Parenting'],
-    format: 'Short-Form Problem/Solution Routine',
-    thumbnail: '/thumbnails/IMG_1453.PNG',
-    videoUrl: 'https://youtube.com/shorts/HWo6MUIOS3s',
-  },
-  {
-    title: 'The Ultimate Hydration Secret',
-    tags: ['Beauty', 'Wellness'],
-    format: 'Unboxing and Product Demo',
-    thumbnail: '/thumbnails/thumb1.png',
-    videoUrl: 'https://youtube.com/shorts/BxbpYq2JL-o',
-  },
-  {
-    title: 'Safe Sleep Transition Must Have',
-    tags: ['Baby & Family', 'Parenting'],
-    format: 'Testimonial & Product Review',
-    thumbnail: '/thumbnails/thumb2.png',
-    videoUrl: 'https://youtube.com/shorts/Uga_-UDcexM',
+    type: 'url',
   },
 ];
 
@@ -144,9 +85,31 @@ function useColumnCount() {
 const ROWS_PER_PAGE = 2;
 
 export function PortfolioGallery() {
+  // Starts with the bundled fallback so the gallery is never empty, then
+  // swaps in the admin-managed list from the backend once it loads (the
+  // backend can have a cold-start delay on its free hosting tier, so the
+  // fallback is what most first-time visitors briefly see).
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>(fallbackPortfolioItems);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [activeItem, setActiveItem] = useState<PortfolioItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`${API_BASE_URL}/api/portfolio`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`Status ${res.status}`))))
+      .then((data) => {
+        if (!cancelled && Array.isArray(data.items) && data.items.length > 0) {
+          setPortfolioItems(data.items);
+        }
+      })
+      .catch((err) => {
+        console.warn('Falling back to bundled portfolio items:', err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const columns = useColumnCount();
   const itemsPerPage = columns * ROWS_PER_PAGE;
@@ -155,7 +118,7 @@ export function PortfolioGallery() {
     const tagSet = new Set<string>();
     portfolioItems.forEach((item) => item.tags.forEach((t) => tagSet.add(t)));
     return Array.from(tagSet).sort();
-  }, []);
+  }, [portfolioItems]);
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -344,6 +307,7 @@ export function PortfolioGallery() {
         isOpen={activeItem !== null}
         onClose={() => setActiveItem(null)}
         videoUrl={activeItem?.videoUrl ?? ''}
+        videoType={activeItem?.type ?? 'url'}
         title={activeItem?.title ?? ''}
         subtitle={activeItem ? activeItem.tags.join(' · ') : ''}
       />

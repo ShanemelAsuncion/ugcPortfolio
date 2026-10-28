@@ -2,8 +2,18 @@ import { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
+import { API_BASE_URL } from '../lib/config';
 
-const photos = [
+interface PhotoItem {
+  url: string;
+  category: string;
+  description: string;
+}
+
+// Shown immediately on load (and used as a fallback if the admin-managed API
+// is unreachable). Real editing happens at /admin on the backend, which
+// replaces this list once it loads — see the useEffect below.
+const fallbackPhotos: PhotoItem[] = [
   {
     url: '/thumbnails/IMG_0981.PNG',
     category: 'Skincare',
@@ -37,8 +47,26 @@ const photos = [
 ];
 
 export function UGCPhotoGallery() {
+  const [photos, setPhotos] = useState<PhotoItem[]>(fallbackPhotos);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' });
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`${API_BASE_URL}/api/photos`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`Status ${res.status}`))))
+      .then((data) => {
+        if (!cancelled && Array.isArray(data.items) && data.items.length > 0) {
+          setPhotos(data.items);
+        }
+      })
+      .catch((err) => {
+        console.warn('Falling back to bundled photos:', err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -53,6 +81,12 @@ export function UGCPhotoGallery() {
       emblaApi.off('select', onSelect);
     };
   }, [emblaApi]);
+
+  // Slide count changes once the admin-managed list replaces the fallback —
+  // Embla needs to recompute slide positions when that happens.
+  useEffect(() => {
+    emblaApi?.reInit();
+  }, [emblaApi, photos]);
 
   return (
     <section id="photography" className="bg-white py-24 px-6 md:px-20">

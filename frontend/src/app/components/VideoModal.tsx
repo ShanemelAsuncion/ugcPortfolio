@@ -6,11 +6,13 @@ interface VideoModalProps {
   isOpen: boolean;
   onClose: () => void;
   videoUrl: string;
+  /** 'upload' = direct video file (plays in a native <video> tag). 'url' = YouTube/etc link (iframe embed). */
+  videoType?: 'upload' | 'url';
   title: string;
   subtitle: string;
 }
 
-export function VideoModal({ isOpen, onClose, videoUrl, title, subtitle }: VideoModalProps) {
+export function VideoModal({ isOpen, onClose, videoUrl, videoType = 'url', title, subtitle }: VideoModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -40,15 +42,25 @@ export function VideoModal({ isOpen, onClose, videoUrl, title, subtitle }: Video
 
             {/* Video Container */}
             <div className="aspect-video bg-black">
-              {videoUrl && (
-                <iframe
+              {videoUrl && videoType === 'upload' ? (
+                <video
                   className="w-full h-full"
-                  src={getYouTubeEmbedUrl(videoUrl, true)}
-                  title={title}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
+                  src={videoUrl}
+                  controls
+                  autoPlay
+                  playsInline
                 />
+              ) : (
+                videoUrl && (
+                  <iframe
+                    className="w-full h-full"
+                    src={getYouTubeEmbedUrl(videoUrl, true)}
+                    title={title}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                )
               )}
             </div>
 

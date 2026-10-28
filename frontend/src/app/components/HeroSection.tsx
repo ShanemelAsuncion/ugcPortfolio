@@ -1,15 +1,43 @@
+import { useEffect, useState } from 'react';
 import { ArrowRight, Mail } from 'lucide-react';
 import { FaTiktok } from 'react-icons/fa';
 import { RiInstagramFill, RiYoutubeFill } from 'react-icons/ri';
 import { motion } from 'motion/react';
+import { API_BASE_URL } from '../lib/config';
 
-const stats = [
+// Shown immediately on load (and used as a fallback if the admin-managed API
+// is unreachable). Real editing happens at /admin on the backend's Stats
+// tab, which replaces this once it loads — see the useEffect below.
+const fallbackStats = [
   { value: '8.3k', label: 'Total Reach' },
   { value: '50+', label: 'Brands' },
   { value: '70+', label: 'Videos Delivered' },
 ];
 
 export function HeroSection() {
+  const [stats, setStats] = useState(fallbackStats);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`${API_BASE_URL}/api/stats`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`Status ${res.status}`))))
+      .then((data) => {
+        if (!cancelled && data.totalReach && data.brands && data.videosDelivered) {
+          setStats([
+            { value: data.totalReach, label: 'Total Reach' },
+            { value: data.brands, label: 'Brands' },
+            { value: data.videosDelivered, label: 'Videos Delivered' },
+          ]);
+        }
+      })
+      .catch((err) => {
+        console.warn('Falling back to bundled stats:', err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <section className="min-h-screen bg-[#FAF6F0] flex items-center px-6 py-20 md:px-20">
       <div className="max-w-7xl mx-auto w-full">
