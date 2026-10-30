@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { VideoModal } from './VideoModal';
 import { API_BASE_URL } from '../lib/config';
 
@@ -91,6 +91,9 @@ export function PortfolioGallery() {
   // fallback is what most first-time visitors briefly see).
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>(fallbackPortfolioItems);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [tagSearch, setTagSearch] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [activeItem, setActiveItem] = useState<PortfolioItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -121,18 +124,65 @@ export function PortfolioGallery() {
   }, [portfolioItems]);
 
   const toggleTag = (tag: string) => {
+    setTagSearch('');
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
 
-  // OR logic: a video shows if it matches ANY selected tag.
-  const filteredItems =
-    selectedTags.length === 0
-      ? portfolioItems
-      : portfolioItems.filter((item) =>
-          item.tags.some((tag) => selectedTags.includes(tag))
-        );
+  const clearFilters = () => {
+    setTagSearch('');
+    setSelectedTags([]);
+  };
+
+  const normalizedSearch = tagSearch.trim().toLowerCase();
+  const suggestions = normalizedSearch
+    ? allTags.filter((tag) => tag.toLowerCase().includes(normalizedSearch))
+    : [];
+
+  const handleSearchChange = (value: string) => {
+    setTagSearch(value);
+    setSelectedTags([]);
+    setShowSuggestions(true);
+    setHighlightedIndex(-1);
+  };
+
+  const pickSuggestion = (tag: string) => {
+    setTagSearch(tag);
+    setShowSuggestions(false);
+    setHighlightedIndex(-1);
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Escape') {
+      setShowSuggestions(false);
+    } else if (e.key === 'Enter') {
+      if (showSuggestions && suggestions[highlightedIndex]) {
+        pickSuggestion(suggestions[highlightedIndex]);
+      } else {
+        setShowSuggestions(false);
+      }
+    } else if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && suggestions.length > 0) {
+      e.preventDefault();
+      const step = e.key === 'ArrowDown' ? 1 : -1;
+      setShowSuggestions(true);
+      setHighlightedIndex((i) => (i + step + suggestions.length) % suggestions.length);
+    }
+  };
+
+  // The search box and the tag buttons are separate filters — using one clears
+  // the other. Search: a full tag name matches only that tag, partial text
+  // matches any tag containing it. Buttons: OR logic, a video shows if it
+  // matches ANY selected tag.
+  const exactTag = allTags.find((tag) => tag.toLowerCase() === normalizedSearch);
+  const filteredItems = portfolioItems.filter((item) => {
+    if (normalizedSearch) {
+      return item.tags.some((tag) =>
+        exactTag ? tag === exactTag : tag.toLowerCase().includes(normalizedSearch)
+      );
+    }
+    return selectedTags.length === 0 || item.tags.some((tag) => selectedTags.includes(tag));
+  });
 
   const totalPages = Math.max(1, Math.ceil(filteredItems.length / itemsPerPage));
 
@@ -140,7 +190,7 @@ export function PortfolioGallery() {
   // so you never land on a now-empty page.
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedTags, itemsPerPage]);
+  }, [selectedTags, normalizedSearch, itemsPerPage]);
 
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(totalPages);
@@ -167,13 +217,64 @@ export function PortfolioGallery() {
           Filter by niche — select multiple to broaden your view.
         </p>
 
+        {/* Tag search */}
+        <div className="relative z-30 max-w-md mx-auto mb-6">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9B8B7E] pointer-events-none" />
+          <input
+            type="search"
+            role="combobox"
+            value={tagSearch}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setShowSuggestions(false)}
+            placeholder="Search by tag, e.g. Skincare"
+            aria-label="Search videos by tag"
+            aria-expanded={showSuggestions && normalizedSearch.length > 0}
+            aria-controls="portfolio-tag-suggestions"
+            aria-autocomplete="list"
+            autoComplete="off"
+            className="w-full pl-11 pr-5 py-2.5 rounded-full bg-white border border-[#E5DDD3] text-sm text-[#7E6956] placeholder:text-[#9B8B7E] focus:outline-none focus:border-[#C4A88A] transition-colors"
+          />
+
+          {showSuggestions && normalizedSearch && (
+            <ul
+              id="portfolio-tag-suggestions"
+              role="listbox"
+              className="absolute left-0 right-0 top-full mt-2 max-h-60 overflow-y-auto rounded-2xl bg-white border border-[#E5DDD3] shadow-lg py-2"
+            >
+              {suggestions.length === 0 ? (
+                <li className="px-5 py-2 text-sm text-[#9B8B7E]">No matching tags</li>
+              ) : (
+                suggestions.map((tag, index) => (
+                  <li
+                    key={tag}
+                    role="option"
+                    aria-selected={index === highlightedIndex}
+                    // Keeps focus in the input so its onBlur doesn't close the
+                    // list before the click lands.
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => pickSuggestion(tag)}
+                    onMouseEnter={() => setHighlightedIndex(index)}
+                    className={`px-5 py-2 text-sm text-[#7E6956] cursor-pointer ${
+                      index === highlightedIndex ? 'bg-[#FAF0E6]' : ''
+                    }`}
+                  >
+                    {tag}
+                  </li>
+                ))
+              )}
+            </ul>
+          )}
+        </div>
+
         {/* Filter tabs — always a single row; scrolls horizontally if it
             doesn't fit rather than wrapping to a second line. */}
         <div className="flex flex-nowrap items-center gap-2 sm:gap-3 mb-14 overflow-x-auto px-2 pb-1 justify-start sm:justify-center">
           <button
-            onClick={() => setSelectedTags([])}
+            onClick={clearFilters}
             className={`flex-shrink-0 whitespace-nowrap px-5 py-2 rounded-full text-sm transition-colors border ${
-              selectedTags.length === 0
+              selectedTags.length === 0 && !normalizedSearch
                 ? 'bg-[#C4A88A] text-white border-[#C4A88A]'
                 : 'bg-white text-[#7E6956] border-[#E5DDD3] hover:border-[#C4A88A]'
             }`}
@@ -201,7 +302,7 @@ export function PortfolioGallery() {
         {/* Grid */}
         {filteredItems.length === 0 ? (
           <p className="text-center text-[#9B8B7E]">
-            No videos match that combination yet — try a different filter.
+            No videos match that search or combination yet — try a different tag.
           </p>
         ) : (
           <>
