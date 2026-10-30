@@ -1,7 +1,7 @@
 // Browser-side helper: uploads a file directly to Cloudinary (never through our
 // own server, so large video files don't hit Render's request size/time limits).
 
-export type UploadPurpose = 'video' | 'thumbnail' | 'photo';
+export type UploadPurpose = 'video' | 'thumbnail' | 'photo' | 'logo';
 
 export interface UploadResult {
   secureUrl: string;

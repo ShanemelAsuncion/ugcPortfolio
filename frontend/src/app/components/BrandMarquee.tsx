@@ -1,20 +1,18 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
+import { API_BASE_URL } from '../lib/config';
 
 interface Brand {
   name: string;
-  // Optional path to a logo image saved in /public/logos, e.g. '/logos/batiste.png'.
+  // Optional logo image: a full URL, or a path in /public/logos, e.g. '/logos/batiste.png'.
   // Brands without a logo automatically fall back to a text pill — no broken images.
   logo?: string;
 }
 
-// Add `logo: '/logos/yourfile.png'` once you have permission to use each brand's
-// logo image. Save logo files in frontend/public/logos/.
-//
-// NOTE: display names below are my best guess from each filename — I haven't
-// seen the actual logo images, so please correct any that are wrong
-// (capitalization, spacing, apostrophes, etc.), especially: Paris Baguette,
-// Another Face, FNTCASE, PRMR, Keyth, and Dodoskin.
-const brands: Brand[] = [
+// Shown immediately on load (and used as a fallback if the admin-managed API
+// is unreachable). Real editing happens at /admin on the backend's Brands
+// tab, which replaces this once it loads — see the useEffect below.
+const fallbackBrands: Brand[] = [
   { name: 'Hasol', logo: '/logos/hasol.png' },
   { name: 'Sana', logo: '/logos/sana.png' },
   { name: 'Aromatica', logo: '/logos/aromatica.png' },
@@ -94,6 +92,25 @@ function BrandChip({ brand }: { brand: Brand }) {
 }
 
 export function BrandMarquee() {
+  const [brands, setBrands] = useState(fallbackBrands);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`${API_BASE_URL}/api/brands`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`Status ${res.status}`))))
+      .then((data) => {
+        if (!cancelled && Array.isArray(data.items)) {
+          setBrands(data.items);
+        }
+      })
+      .catch((err) => {
+        console.warn('Falling back to bundled brands:', err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <section className="bg-white py-16 px-6 md:px-20 border-y border-[#E7DCCD]">
       <motion.div

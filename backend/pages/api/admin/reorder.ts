@@ -1,6 +1,19 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { rejectIfNotAuthenticated } from '../../../lib/auth';
-import { getVideoManifest, saveVideoManifest, getPhotoManifest, savePhotoManifest } from '../../../lib/cloudinary';
+import {
+  getVideoManifest,
+  saveVideoManifest,
+  getPhotoManifest,
+  savePhotoManifest,
+  getBrandManifest,
+  saveBrandManifest,
+} from '../../../lib/cloudinary';
+
+const COLLECTIONS = {
+  videos: [getVideoManifest, saveVideoManifest],
+  photos: [getPhotoManifest, savePhotoManifest],
+  brands: [getBrandManifest, saveBrandManifest],
+} as const;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -9,18 +22,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (rejectIfNotAuthenticated(req, res)) return;
 
   const { collection, orderedIds } = req.body ?? {};
-  if (collection !== 'videos' && collection !== 'photos') {
-    return res.status(400).json({ message: "collection must be 'videos' or 'photos'" });
+  if (collection !== 'videos' && collection !== 'photos' && collection !== 'brands') {
+    return res.status(400).json({ message: "collection must be 'videos', 'photos', or 'brands'" });
   }
   if (!Array.isArray(orderedIds) || orderedIds.some((id) => typeof id !== 'string')) {
     return res.status(400).json({ message: 'orderedIds must be a string array' });
   }
 
-  const [getManifest, saveManifest] =
-    collection === 'videos' ? [getVideoManifest, saveVideoManifest] : [getPhotoManifest, savePhotoManifest];
+  const [getManifest, saveManifest] = COLLECTIONS[collection as keyof typeof COLLECTIONS];
 
   try {
-    const items = await getManifest();
+    const items: any[] = await getManifest();
     if (orderedIds.length !== items.length || new Set(orderedIds).size !== items.length) {
       return res.status(400).json({ message: 'orderedIds must contain every item exactly once' });
     }

@@ -5,12 +5,14 @@ import {
   VIDEO_UPLOAD_FOLDER,
   THUMBNAIL_UPLOAD_FOLDER,
   PHOTO_UPLOAD_FOLDER,
+  BRAND_LOGO_UPLOAD_FOLDER,
 } from '../../../lib/cloudinary';
 
 const PURPOSES = {
   video: { folder: VIDEO_UPLOAD_FOLDER, resourceType: 'video' as const },
   thumbnail: { folder: THUMBNAIL_UPLOAD_FOLDER, resourceType: 'image' as const },
   photo: { folder: PHOTO_UPLOAD_FOLDER, resourceType: 'image' as const },
+  logo: { folder: BRAND_LOGO_UPLOAD_FOLDER, resourceType: 'image' as const },
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -22,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { purpose } = req.body ?? {};
   const config = PURPOSES[purpose as keyof typeof PURPOSES];
   if (!config) {
-    return res.status(400).json({ message: "purpose must be 'video', 'thumbnail', or 'photo'" });
+    return res.status(400).json({ message: "purpose must be 'video', 'thumbnail', 'photo', or 'logo'" });
   }
 
   try {

@@ -3,9 +3,10 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { VideoManager } from '../../components/VideoManager';
 import { PhotoManager } from '../../components/PhotoManager';
+import { BrandManager } from '../../components/BrandManager';
 import { StatsManager } from '../../components/StatsManager';
 
-type Tab = 'videos' | 'photos' | 'stats';
+type Tab = 'videos' | 'photos' | 'brands' | 'stats';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -69,6 +70,9 @@ export default function AdminDashboard() {
           <button className={tab === 'photos' ? 'tab active' : 'tab'} onClick={() => setTab('photos')}>
             Photos
           </button>
+          <button className={tab === 'brands' ? 'tab active' : 'tab'} onClick={() => setTab('brands')}>
+            Brands
+          </button>
           <button className={tab === 'stats' ? 'tab active' : 'tab'} onClick={() => setTab('stats')}>
             Stats
           </button>
@@ -76,6 +80,7 @@ export default function AdminDashboard() {
 
         {tab === 'videos' && <VideoManager />}
         {tab === 'photos' && <PhotoManager />}
+        {tab === 'brands' && <BrandManager />}
         {tab === 'stats' && <StatsManager />}
       </div>
 
