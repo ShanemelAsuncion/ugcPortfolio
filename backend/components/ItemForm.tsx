@@ -128,7 +128,7 @@ export function ItemForm({ initial, existingTags, saving, onSave, onCancel }: It
         </div>
       ) : (
         <div className="field">
-          <label>Video URL (YouTube, Vimeo, TikTok…)</label>
+          <label>Video URL (YouTube, Instagram, TikTok, Vimeo)</label>
           <input
             type="url"
             placeholder="https://youtube.com/shorts/..."

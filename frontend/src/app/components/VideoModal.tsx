@@ -1,18 +1,21 @@
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { getYouTubeEmbedUrl } from '../lib/youtube';
+import { parseVideoLink } from '../lib/videoEmbed';
 
 interface VideoModalProps {
   isOpen: boolean;
   onClose: () => void;
   videoUrl: string;
-  /** 'upload' = direct video file (plays in a native <video> tag). 'url' = YouTube/etc link (iframe embed). */
+  /** 'upload' = direct video file (plays in a native <video> tag). 'url' = YouTube/Instagram/TikTok/Vimeo link (iframe embed). */
   videoType?: 'upload' | 'url';
   title: string;
   subtitle: string;
 }
 
 export function VideoModal({ isOpen, onClose, videoUrl, videoType = 'url', title, subtitle }: VideoModalProps) {
+  const link = videoType === 'url' && videoUrl ? parseVideoLink(videoUrl, true) : null;
+  const linkLabel = link?.platform ? `Watch on ${link.platform}` : 'Watch the video';
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -41,7 +44,13 @@ export function VideoModal({ isOpen, onClose, videoUrl, videoType = 'url', title
             </button>
 
             {/* Video Container */}
-            <div className="aspect-video bg-black">
+            <div
+              className={
+                link?.vertical && link.embedUrl
+                  ? 'h-[70vh] w-full max-w-[400px] mx-auto bg-black'
+                  : 'aspect-video bg-black'
+              }
+            >
               {videoUrl && videoType === 'upload' ? (
                 <video
                   className="w-full h-full"
@@ -50,16 +59,20 @@ export function VideoModal({ isOpen, onClose, videoUrl, videoType = 'url', title
                   autoPlay
                   playsInline
                 />
+              ) : link?.embedUrl ? (
+                <iframe
+                  className="w-full h-full"
+                  src={link.embedUrl}
+                  title={title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
               ) : (
-                videoUrl && (
-                  <iframe
-                    className="w-full h-full"
-                    src={getYouTubeEmbedUrl(videoUrl, true)}
-                    title={title}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
+                link && (
+                  <div className="w-full h-full flex items-center justify-center p-6 text-center text-white/80">
+                    This video can't play here{link.href ? ' — use the link below to watch it.' : '.'}
+                  </div>
                 )
               )}
             </div>
@@ -72,6 +85,16 @@ export function VideoModal({ isOpen, onClose, videoUrl, videoType = 'url', title
               <p className="text-[#6B5D50]">
                 {subtitle}
               </p>
+              {link?.href && (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block mt-3 text-sm text-[#B5623F] underline"
+                >
+                  {linkLabel}
+                </a>
+              )}
             </div>
           </motion.div>
         </motion.div>
